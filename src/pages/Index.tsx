@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Hero from '@/components/Hero';
 import DonorCard, { DonorInfo } from '@/components/DonorCard';
 import RequestCard from '@/components/RequestCard';
 import HealthCard from '@/components/HealthCard';
-import { mockDonors, mockRequests, mockHealthArticles } from '@/services/mockData';
+import { mockHealthArticles } from '@/services/mockData';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { Link } from 'react-router-dom';
@@ -16,24 +16,160 @@ import {
 import DonorRegistrationForm from '@/components/DonorRegistrationForm';
 import BloodRequestForm from '@/components/BloodRequestForm';
 
+import axios from 'axios';
+// const BASE_URL = 'http://localhost:3000/api';
+const BASE_URL = 'https://people-blood-be.onrender.com/api';
+
 const Index = () => {
   const { toast } = useToast();
   const [donorFormOpen, setDonorFormOpen] = useState(false);
   const [requestFormOpen, setRequestFormOpen] = useState(false);
+  const [donors, setDonors] = useState([]);
+  const [requests, setRequests] = useState([]);
+  const [loadingDonors, setLoadingDonors] = useState(true);
+  const [loadingRequests, setLoadingRequests] = useState(true);
+  const [errorDonors, setErrorDonors] = useState(null);
+  const [errorRequests, setErrorRequests] = useState(null);
   
-  const handleContactDonor = (donor: DonorInfo) => {
+// Fetch donors data
+const fetchDonors = async () => {
+  setLoadingDonors(true);
+  try {
+    const response = await axios.get(`${BASE_URL}/donors`);
+    setDonors(response.data);
+    setErrorDonors(null);
+  } catch (err) {
+    const message = axios.isAxiosError(err) && err.response
+      ? err.response.data.message || 'Failed to load donors'
+      : err.message || 'An error occurred';
+
+    setErrorDonors(message);
+    toast({
+      title: "Error",
+      description: message,
+      variant: "destructive",
+    });
+  } finally {
+    setLoadingDonors(false);
+  }
+};
+
+// Fetch blood requests
+const fetchBloodRequests = async () => {
+  setLoadingRequests(true);
+  try {
+    const response = await axios.get(`${BASE_URL}/blood-requests`);
+    setRequests(response.data);
+    setErrorRequests(null);
+  } catch (err) {
+    const message = axios.isAxiosError(err) && err.response
+      ? err.response.data.message || 'Failed to load blood requests'
+      : err.message || 'An error occurred';
+
+    setErrorRequests(message);
+    toast({
+      title: "Error",
+      description: message,
+      variant: "destructive",
+    });
+  } finally {
+    setLoadingRequests(false);
+  }
+};
+
+// Load data on component mount
+useEffect(() => {
+  fetchDonors();
+  fetchBloodRequests();
+}, []);
+
+// Contact donor (placeholder)
+const handleContactDonor = async (donor) => {
+  try {
+    // Placeholder for contact API call
     toast({
       title: "Contact Request Sent",
       description: `A message has been sent to ${donor.name}.`,
     });
-  };
-  
-  const handleRespondToRequest = (request: any) => {
+  } catch (err) {
+    toast({
+      title: "Error",
+      description: err instanceof Error ? err.message : 'Failed to contact donor',
+      variant: "destructive",
+    });
+  }
+};
+
+// Respond to request (placeholder)
+const handleRespondToRequest = async (request) => {
+  try {
+    // Placeholder for response API call
     toast({
       title: "Response Recorded",
       description: `Your response to help ${request.patientName} has been recorded.`,
     });
-  };
+
+    // Refresh the requests
+    fetchBloodRequests();
+  } catch (err) {
+    toast({
+      title: "Error",
+      description: err instanceof Error ? err.message : 'Failed to respond to request',
+      variant: "destructive",
+    });
+  }
+};
+
+// Submit donor registration
+const handleSubmitDonorRegistration = async (formData) => {
+  try {
+    await axios.post(`${BASE_URL}/donors`, formData);
+
+    toast({
+      title: "Registration Successful",
+      description: "Thank you for registering as a blood donor!",
+    });
+
+    setDonorFormOpen(false);
+    fetchDonors();
+  } catch (err) {
+    const message = axios.isAxiosError(err) && err.response
+      ? err.response.data.message || 'Failed to register as donor'
+      : err.message || 'An error occurred';
+
+    toast({
+      title: "Error",
+      description: message,
+      variant: "destructive",
+    });
+  }
+};
+
+// Submit blood request
+const handleSubmitRequest = async (formData) => {
+  try {
+    await axios.post(`${BASE_URL}/blood-requests`, formData);
+
+    toast({
+      title: "Request Created",
+      description: "Your blood request has been successfully created.",
+    });
+
+    setRequestFormOpen(false);
+    fetchBloodRequests();
+  } catch (err) {
+    const message = axios.isAxiosError(err) && err.response
+      ? err.response.data.message || 'Failed to create blood request'
+      : err.message || 'An error occurred';
+
+    toast({
+      title: "Error",
+      description: message,
+      variant: "destructive",
+    });
+  }
+};
+
 
   return (
     <div>
@@ -48,15 +184,47 @@ const Index = () => {
               <Link to="/donors">View All</Link>
             </Button>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {mockDonors.slice(0, 4).map(donor => (
-              <DonorCard 
-                key={donor.id} 
-                donor={donor} 
-                onContact={handleContactDonor}
-              />
-            ))}
-          </div>
+          
+          {/* Loading State for Donors */}
+          {loadingDonors && (
+            <div className="text-center py-8">
+              <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+              <p className="text-lg text-muted-foreground">Loading donors...</p>
+            </div>
+          )}
+          
+          {/* Error State for Donors */}
+          {!loadingDonors && errorDonors && (
+            <div className="text-center py-8">
+              <p className="text-lg text-red-500">{errorDonors}</p>
+              <Button 
+                variant="outline" 
+                className="mt-4"
+                onClick={fetchDonors}
+              >
+                Try Again
+              </Button>
+            </div>
+          )}
+          
+          {/* Donors Grid */}
+          {!loadingDonors && !errorDonors && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {donors.length > 0 ? (
+                donors.slice(0, 4).map(donor => (
+                  <DonorCard 
+                    key={donor._id} 
+                    donor={donor} 
+                    onContact={handleContactDonor}
+                  />
+                ))
+              ) : (
+                <div className="col-span-full text-center py-8">
+                  <p className="text-lg text-muted-foreground">No donors available at the moment.</p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </section>
       
@@ -69,15 +237,47 @@ const Index = () => {
               <Link to="/requests">View All</Link>
             </Button>
           </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {mockRequests.slice(0, 3).map(request => (
-              <RequestCard 
-                key={request.id} 
-                request={request} 
-                onRespond={handleRespondToRequest}
-              />
-            ))}
-          </div>
+          
+          {/* Loading State for Requests */}
+          {loadingRequests && (
+            <div className="text-center py-8">
+              <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4"></div>
+              <p className="text-lg text-muted-foreground">Loading requests...</p>
+            </div>
+          )}
+          
+          {/* Error State for Requests */}
+          {!loadingRequests && errorRequests && (
+            <div className="text-center py-8">
+              <p className="text-lg text-red-500">{errorRequests}</p>
+              <Button 
+                variant="outline" 
+                className="mt-4"
+                onClick={fetchBloodRequests}
+              >
+                Try Again
+              </Button>
+            </div>
+          )}
+          
+          {/* Requests Grid */}
+          {!loadingRequests && !errorRequests && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {requests.length > 0 ? (
+                requests.slice(0, 3).map(request => (
+                  <RequestCard 
+                    key={request._id} 
+                    request={request} 
+                    onRespond={handleRespondToRequest}
+                  />
+                ))
+              ) : (
+                <div className="col-span-full text-center py-8">
+                  <p className="text-lg text-muted-foreground">No emergency blood requests at the moment.</p>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </section>
       
@@ -130,7 +330,10 @@ const Index = () => {
           <DialogHeader>
             <DialogTitle>Donor Registration</DialogTitle>
           </DialogHeader>
-          <DonorRegistrationForm onClose={() => setDonorFormOpen(false)} />
+          <DonorRegistrationForm 
+            onSubmit={handleSubmitDonorRegistration} 
+            onClose={() => setDonorFormOpen(false)} 
+          />
         </DialogContent>
       </Dialog>
       
@@ -139,7 +342,10 @@ const Index = () => {
           <DialogHeader>
             <DialogTitle>Blood Request</DialogTitle>
           </DialogHeader>
-          <BloodRequestForm onClose={() => setRequestFormOpen(false)} />
+          <BloodRequestForm 
+            onSubmit={handleSubmitRequest} 
+            onClose={() => setRequestFormOpen(false)} 
+          />
         </DialogContent>
       </Dialog>
     </div>

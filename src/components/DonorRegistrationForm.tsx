@@ -30,6 +30,10 @@ import { format } from "date-fns";
 import { Calendar as CalendarIcon, CheckCircle2 } from "lucide-react";
 import { useToast } from '@/hooks/use-toast';
 
+import axios from 'axios';
+// const BASE_URL = 'http://localhost:3000/api';
+const BASE_URL = 'https://people-blood-be.onrender.com/api';
+
 const donorFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),
   email: z.string().email({ message: "Please enter a valid email address." }),
@@ -82,7 +86,6 @@ const DonorRegistrationForm: React.FC<Props> = ({ onClose }) => {
 
 // Updated onSubmit function for the frontend donor form
 // Replace this in your DonorRegistrationForm.tsx file
-
 const onSubmit = async (data: z.infer<typeof donorFormSchema>) => {
   try {
     // Transform the data to match the backend API expectations
@@ -102,40 +105,34 @@ const onSubmit = async (data: z.infer<typeof donorFormSchema>) => {
       additionalInfo: data.additionalInfo || "",
       agreeTerms: data.agreeTerms
     };
-    
-    // Make API call to your backend
-    const response = await fetch('http://localhost:3000/api/donners', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(donorData),
-    });
-    
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || 'Failed to submit registration');
-    }
-    
-    const result = await response.json();
-    console.log('Registration successful:', result);
-    
+
+    const response = await axios.post(`${BASE_URL}/donors`, donorData);
+
+    console.log('Registration successful:', response.data);
+
     toast({
       title: "Registration Successful",
       description: "Your donor registration has been submitted. We'll contact you soon!",
     });
-    
+
     onClose();
-  } catch (error) {
-    console.error('Registration error:', error);
-    
+  } catch (err) {
+    const message = axios.isAxiosError(err) && err.response
+      ? err.response.data.message || 'Failed to submit registration'
+      : err instanceof Error
+      ? err.message
+      : 'Something went wrong. Please try again.';
+
+    console.error('Registration error:', err);
+
     toast({
       variant: "destructive",
       title: "Registration Failed",
-      description: error instanceof Error ? error.message : "Something went wrong. Please try again.",
+      description: message,
     });
   }
 };
+
 
   return (
     <div className="max-h-[80vh] overflow-y-auto px-1">
