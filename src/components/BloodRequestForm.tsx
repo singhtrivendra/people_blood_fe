@@ -137,7 +137,7 @@ const BASE_URL = 'https://people-blood-be.onrender.com/api';
         const data = await response.json();
         if (data.length === 0) throw new Error('No coordinates found');
         
-        const coordinates: [number, number] = [parseFloat(data[0].lon), parseFloat(data[0].lat)];
+        const coordinates = [parseFloat(data[0].lon), parseFloat(data[0].lat)];
         updateGeocodingCache(address, coordinates);
         
         form.setValue("location", {
@@ -148,7 +148,7 @@ const BASE_URL = 'https://people-blood-be.onrender.com/api';
         toast({
           title: "Address Located",
           description: "Your address has been successfully geocoded.",
-          variant: "default",
+          variant: "success",
         });
       } catch (error) {
         console.error("Geocoding error:", error);
@@ -168,7 +168,6 @@ const BASE_URL = 'https://people-blood-be.onrender.com/api';
         contactPerson: "",
         email: "",
         phone: "",
-        bloodType: "", // Added bloodType to default values
         unitsNeeded: "",
         hospital: "",
         address: "",
@@ -178,7 +177,6 @@ const BASE_URL = 'https://people-blood-be.onrender.com/api';
         },
         urgency: "",
         reason: "",
-        requiredBy: null, // Add requiredBy with a default value
         additionalInfo: "",
         verifyInfo: false,
       },
@@ -230,7 +228,7 @@ const BASE_URL = 'https://people-blood-be.onrender.com/api';
             toast({
               title: "Location Detected",
               description: "Current location added to form.",
-              variant: "default",
+              variant: "success",
             });
             setIsLocating(false);
           },
@@ -362,7 +360,7 @@ const BASE_URL = 'https://people-blood-be.onrender.com/api';
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Required Blood Type</FormLabel>
-                      <Select onValueChange={(value) => field.onChange(value)} defaultValue={String(field.value)}>
+                      <Select onValueChange={field.onChange} defaultValue={field.value}>
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select blood type" />
