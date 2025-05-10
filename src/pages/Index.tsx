@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import Hero from '@/components/Hero';
-import DonorCard, { DonorInfo } from '@/components/DonorCard';
+import DonorCard from '@/components/DonorCard';
 import RequestCard from '@/components/RequestCard';
 import HealthCard from '@/components/HealthCard';
 import { mockHealthArticles } from '@/services/mockData';

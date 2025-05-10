@@ -263,7 +263,7 @@ const updateRequestStatus = async (id: string, status: string) => {
           request.patientName.toLowerCase().includes(searchTerm.toLowerCase()) ||
           request.contactPerson.toLowerCase().includes(searchTerm.toLowerCase()) ||
           request.hospital.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          request.location.toLowerCase().includes(searchTerm.toLowerCase());
+          JSON.stringify(request.location).toLowerCase().includes(searchTerm.toLowerCase());
         const matchesBloodType = filterBloodType === "all" || filterBloodType === "" || request.bloodType === filterBloodType;
         const matchesStatus = filterStatus === "all" || filterStatus === "" || request.status === filterStatus;
         return matchesSearch && matchesBloodType && matchesStatus;
