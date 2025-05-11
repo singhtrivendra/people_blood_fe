@@ -3,6 +3,7 @@ import Hero from '@/components/Hero';
 import DonorCard from '@/components/DonorCard';
 import RequestCard from '@/components/RequestCard';
 import HealthCard from '@/components/HealthCard';
+import AnnouncementBanner from '@/components/AnnouncementBanner';
 import { mockHealthArticles } from '@/services/mockData';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
@@ -173,6 +174,9 @@ const handleSubmitRequest = async (formData) => {
 
   return (
     <div>
+      {/* Announcement Banner - Added at the top of the page */}
+      <AnnouncementBanner />
+      
       <Hero />
       
       {/* Featured Donors Section */}

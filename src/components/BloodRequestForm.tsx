@@ -28,8 +28,8 @@
   import { useToast } from '@/hooks/use-toast';
 
   import axios from 'axios';
-// const BASE_URL = 'http://localhost:3000/api';
-const BASE_URL = 'https://people-blood-be.onrender.com/api';
+const BASE_URL = 'http://localhost:3000/api';
+// const BASE_URL = 'https://people-blood-be.onrender.com/api';
 
   // Note: Since we can't use zodResolver directly, we'll implement basic form validation in the component
   // and will need to add it back when actually implementing
