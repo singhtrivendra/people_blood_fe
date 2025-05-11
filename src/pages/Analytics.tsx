@@ -370,33 +370,36 @@ const updateRequestStatus = async (id: string, status: string) => {
       };
 
       // Refresh data
-      const refreshData = async () => {
-        setLoading(true);
-        try {
-          // Fetch blood requests
-          const requestsResponse = await fetch('http://localhost:3000/api/blood-requests');
-          const requestsData = await requestsResponse.json();
-          setBloodRequests(requestsData);
+      
+const refreshData = async () => {
+  setLoading(true);
+  try {
+    // Fetch blood requests
+    const requestsResponse = await axios.get(`${BASE_URL}/blood-requests`);
+    setBloodRequests(requestsResponse.data);
 
-          // Fetch donors
-          const donorsResponse = await fetch('http://localhost:3000/api/donors');
-          const donorsData = await donorsResponse.json();
-          setDonors(donorsData);
+    // Fetch donors
+    const donorsResponse = await axios.get(`${BASE_URL}/donors`);
+    setDonors(donorsResponse.data);
 
-          toast({
-            title: "Data Refreshed",
-            description: "Latest data has been loaded",
-          });
-        } catch (err) {
-          toast({
-            title: "Refresh Failed",
-            description: err instanceof Error ? err.message : 'Failed to refresh data',
-            variant: "destructive",
-          });
-        } finally {
-          setLoading(false);
-        }
-      };
+    toast({
+      title: "Data Refreshed",
+      description: "Latest data has been loaded",
+    });
+  } catch (err) {
+    const message = axios.isAxiosError(err) && err.response
+      ? err.response.data.message || 'Failed to refresh data'
+      : err.message || 'An error occurred';
+
+    toast({
+      title: "Refresh Failed",
+      description: message,
+      variant: "destructive",
+    });
+  } finally {
+    setLoading(false);
+  }
+};
 
       // Handler for "View all" buttons
       const handleViewAll = (tab: string) => {
