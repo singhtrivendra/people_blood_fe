@@ -32,8 +32,8 @@ const formatLocation = (location: any) => {
 };
 
 import axios from 'axios';
-// const BASE_URL = 'http://localhost:3000/api';
-const BASE_URL = 'https://people-blood-be.onrender.com/api';
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+// const BASE_URL = 'https://people-blood-be.onrender.com/api';
 
 import { GeolocationController } from '@/components/GeolocationController'
     import React, { useState, useEffect } from 'react';

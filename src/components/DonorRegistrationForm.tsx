@@ -31,8 +31,8 @@ import { Calendar as CalendarIcon, CheckCircle2 } from "lucide-react";
 import { useToast } from '@/hooks/use-toast';
 
 import axios from 'axios';
-// const BASE_URL = 'http://localhost:3000/api';
-const BASE_URL = 'https://people-blood-be.onrender.com/api';
+const BASE_URL = import.meta.env.VITE_BASE_URL;
+// const BASE_URL = 'https://people-blood-be.onrender.com/api';
 
 const donorFormSchema = z.object({
   name: z.string().min(2, { message: "Name must be at least 2 characters." }),

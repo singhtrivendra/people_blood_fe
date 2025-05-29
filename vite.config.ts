@@ -23,7 +23,7 @@ export default defineConfig(({ mode }) => ({
     proxy: {
       '/api': {
         // target: 'http://localhost:3000',
-        target: 'https://people-blood-be.onrender.com',
+        // target: 'https://people-blood-be.onrender.com',
         changeOrigin: true,
       },
     },
