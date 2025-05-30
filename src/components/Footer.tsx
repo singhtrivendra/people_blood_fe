@@ -47,9 +47,9 @@ const Footer: React.FC = () => {
             <h3 className="font-semibold mb-4">Contact</h3>
             <ul className="space-y-2">
               <li className="text-sm text-muted-foreground">Email: info@peopleblood.org</li>
-              <li className="text-sm text-muted-foreground">Phone: +1 (123) 456-7890</li>
+              <li className="text-sm text-muted-foreground">Phone: +91 7703913626</li>
               <li className="text-sm text-muted-foreground">Emergency: 1-800-BLOOD-HELP</li>
-              <li className="text-sm text-muted-foreground">Address: 123 Blood Center St, Health City</li>
+              <li className="text-sm text-muted-foreground">Address: sector-14 Chandigarh</li>
               <li><Link to="/contact" className="text-sm font-medium text-lifelink-500 hover:underline">Contact Us</Link></li>
             </ul>
           </div>

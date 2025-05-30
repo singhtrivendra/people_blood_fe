@@ -65,7 +65,7 @@ const Contact = () => {
     {
       icon: <Phone className="h-5 w-5" />,
       title: "Phone",
-      content: "+1 (123) 456-7890",
+      content: "+91 7703913626",
       description: "Monday-Friday, 8am-6pm"
     },
     {
@@ -77,7 +77,7 @@ const Contact = () => {
     {
       icon: <MapPin className="h-5 w-5" />,
       title: "Location",
-      content: "123 Blood Center St, Health City",
+      content: "sector-14 Chandigarh",
       description: "Find us on Google Maps"
     },
     {
@@ -230,21 +230,7 @@ const Contact = () => {
             </div>
           </div>
           
-          <div className="mt-8">
-            <h3 className="text-lg font-medium mb-4">Follow Us</h3>
-            <div className="flex space-x-4">
-              {["facebook", "twitter", "instagram", "youtube"].map((platform) => (
-                <a 
-                  key={platform} 
-                  href={`#${platform}`} 
-                  className="w-10 h-10 rounded-full flex items-center justify-center bg-card border hover:bg-primary hover:text-primary-foreground transition-colors"
-                >
-                  {/* Icon would go here */}
-                  <span className="sr-only">{platform}</span>
-                </a>
-              ))}
-            </div>
-          </div>
+        {/* add follws div here---- */}
         </div>
       </div>
     </div>
@@ -252,3 +238,19 @@ const Contact = () => {
 };
 
 export default Contact;
+
+//  <div className="mt-8">
+//             <h3 className="text-lg font-medium mb-4">Follow Us</h3>
+//             <div className="flex space-x-4">
+//               {["facebook", "twitter", "instagram", "youtube"].map((platform) => (
+//                 <a 
+//                   key={platform} 
+//                   href={`#${platform}`} 
+//                   className="w-10 h-10 rounded-full flex items-center justify-center bg-card border hover:bg-primary hover:text-primary-foreground transition-colors"
+//                 >
+//                   {/* Icon would go here */}
+//                   <span className="sr-only">{platform}</span>
+//                 </a>
+//               ))}
+//             </div>
+//           </div>
